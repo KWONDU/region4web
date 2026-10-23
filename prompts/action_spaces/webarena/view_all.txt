@@ -1,0 +1,4 @@
+view_all()
+    Description: Reorganize the current page state into functional regions and reveal all of them in their full AXTree form. Use this when the currently exposed regions appear insufficient for the task, for example when the target element seems missing from the observation or when no available action makes progress. This action remains in effect until the agent navigates to a new page.
+    Examples:
+        view_all()

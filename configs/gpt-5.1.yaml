@@ -1,0 +1,10 @@
+# Backbone overlay for the actor + selection LLMs.
+# Loaded by `python -m benchmarks.runner --backbone gpt-5.1` and
+# deep-merged into config.yaml. Routed via the openai/ prefix.
+
+benchmark:
+  llm:
+    model: openai/gpt-5.1
+    params:
+      reasoning_effort: medium
+      verbosity: medium

@@ -1,0 +1,1 @@
+        send_msg_to_user('Based on the results of my search, the city was built in 1751.')

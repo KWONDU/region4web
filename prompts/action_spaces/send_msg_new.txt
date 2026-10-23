@@ -1,0 +1,9 @@
+        send_msg_to_user('the city was built in 1751.')
+
+        send_msg_to_user('Yes')
+
+        send_msg_to_user('No')
+
+        send_msg_to_user('31112')
+
+        send_msg_to_user('Yoshua Bengio')

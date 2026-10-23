@@ -1,0 +1,128 @@
+# =============================================================================
+# Framework
+# =============================================================================
+
+framework:
+
+  # -- Hierarchical Decomposition --
+  decomposition:
+    checkpoint_path: checkpoints/decomposition/run_001/epoch_125.pt
+    threshold: 0.55
+    model:
+      num_roles: 204                  # 203 CDP roles + 1 unknown
+      role_embed_dim: 11
+      hidden_dim: 256
+      num_layers: 3
+
+  # -- Semantic Abstraction --
+  abstraction:
+    base_model: Qwen/Qwen3-0.6B
+    checkpoint_path: checkpoints/abstraction/run_001/step_65350
+    batch_size: 16
+
+# =============================================================================
+# Benchmark — inference time
+# =============================================================================
+
+benchmark:
+
+  # -- WebArena --
+  webarena:
+    task_list: benchmarks/task_lists/full.txt
+    max_steps: 30
+    seed: 42
+    # Replace these with your own WebArena docker URLs. BrowserGym requires
+    # all WA_* env vars to be set; sites your task list never touches can
+    # point to any reachable placeholder.
+    urls:
+      shopping:        http://YOUR_HOST:7770
+      shopping_admin:  http://YOUR_HOST:7780/admin
+      reddit:          http://YOUR_HOST:9999
+      gitlab:          http://YOUR_HOST:8023
+      wikipedia:       http://YOUR_HOST:9999
+      map:             https://www.openstreetmap.org
+      homepage:        http://YOUR_HOST:9999
+
+  # -- BrowserGym action space (WebArena paper format) --
+  action_set:
+    subsets: [webarena]
+    strict: false
+    multiaction: false
+
+  # -- Actor LLM --
+  actor:
+    prompt_path: prompts/inference/agent.txt
+    max_llm_retries: 1
+    # The {obs_description} placeholder in agent.txt is filled at runtime with
+    # obs_description[mode]. ``backbone`` mode passes the full AXTree, so no
+    # description is needed; ``pagedigest`` describes the per-region layout.
+    obs_description:
+      backbone: ""
+      pagedigest: |-
+        The page is split into functional regions, each rendered as a <Rx purpose="..."> ... </Rx> block. Regions deemed task-relevant render their full AXTree subtree inside the block; others appear as the opening tag with no inner content. Newly appeared nodes since the page was first entered are listed at the end inside an <added_elements> block.
+        If the elements you need to interact with do not appear inside any rendered subtree, or no available action makes progress, call view_all() to re-expose every region's full subtree for the rest of this page.
+
+  # -- Region-relevance selection LLM --
+  selection:
+    prompt_path: prompts/inference/selection.txt
+
+  # Bottom-truncate the assembled actor prompt to this many tokens before
+  # sending. Set to roughly (model context window) - (max generation tokens).
+  max_prompt_tokens: 40000
+
+  # backbone | pagedigest. CLI ``--mode`` overrides this.
+  mode: pagedigest
+
+  # Trajectory output: results/{benchmark}/{backbone}/base/{mode}/{task_id}/
+  output_dir: results/
+
+# =============================================================================
+# Training
+# =============================================================================
+
+training:
+
+  # -- Annotation models for training-data generation --
+  data_generation:
+    annotation:
+      model: openai/gpt-5-mini
+      params: { reasoning_effort: medium, verbosity: medium }
+    verification:
+      model: openai/gpt-5-mini
+      params: { reasoning_effort: medium, verbosity: medium }
+
+  # -- Decomposition trainer (RegionPartitioner) --
+  decomposition:
+    epochs: 1000
+    lr: 1e-4
+    grad_clip: 1.0
+    val_ratio: 0.1
+    save_every: 1
+    data_path: data/decomposition.jsonl
+    output_dir: checkpoints/decomposition/
+    focal_loss:
+      alpha: 0.75
+      gamma: 2.0
+
+  # -- Abstraction trainer (full SFT on Qwen3-0.6B) --
+  abstraction:
+    base_model: Qwen/Qwen3-0.6B
+    max_steps: 100000
+    lr: 5e-6
+    warmup_steps: 200
+    lr_schedule: cosine
+    batch_size: 1
+    effective_batch_size: 48
+    max_seq_len: 8192
+    val_ratio: 0.1
+    save_every_steps: 50
+    eval_every_steps: 50
+    data_path: data/abstraction.jsonl
+    prompt_path: prompts/data_generation/abstraction.txt
+    output_dir: checkpoints/abstraction/
+
+# =============================================================================
+# Secrets (copy secrets.yaml.example -> secrets.yaml and fill in keys)
+# =============================================================================
+
+secrets_file: secrets.yaml
