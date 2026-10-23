@@ -1,16 +1,14 @@
 # Region4Web: Rethinking Observation Space Granularity for Web Agents
 
-Code for "Region4Web: Rethinking Observation Space Granularity for Web Agents".
-
 ## Overview
 
 Web agents typically observe a page at the same element-level granularity as their action space, leaving the page's functional organization implicit. **Region4Web** instead makes it explicit by reorganizing the AXTree into functional regions, parts of the page whose elements collectively serve a shared purpose. **PageDigest** then delivers this region-level observation to the actor agent as a compact per-page digest that persists across steps.
 
-<p align="center"><img src="assets/region4web.png" width="100%"></p>
+<p align="center"><img src="assets/region4web.png" width="80%"></p>
 
 **Region4Web.** Hierarchical decomposition classifies each parent-child edge of the AXTree as merge or cut in a single bottom-up traversal, and semantic abstraction produces each resulting region's purpose and state summary.
 
-<p align="center"><img src="assets/pagedigest.png" width="70%"></p>
+<p align="center"><img src="assets/pagedigest.png" width="45%"></p>
 
 **PageDigest.** On entering a new page, the actor agent's backbone LLM selects task-relevant regions from their abstractions. Within the page, PageDigest tracks observation transitions instead of re-invoking Region4Web, and the `view_all` action serves as a fallback when the selected regions are insufficient.
 
@@ -55,7 +53,7 @@ python -m benchmarks.run_parallel --backbone gpt-5.1 --mode pagedigest \
     --task-list benchmarks/task_lists/full.txt
 ```
 
-- `benchmarks/task_lists/lite.txt` runs the 165-task WebArena-Lite subset, and `--task-slice 0:10` runs part of a list.
+- `--task-slice 0:10` runs part of a task list.
 - `--backbone <name>` merges `configs/<name>.yaml` into `config.yaml`. Model names with the `openai/`, `anthropic/`, `deepseek/`, or `gemini/` prefix call the provider API, and other names (e.g., `Qwen/Qwen3.5-27B`) call an OpenAI-compatible vLLM server at `benchmark.llm.base_url`.
 - With `run_parallel` in `pagedigest` mode, the number of parallel runners is capped at the number of visible GPUs, since each runner loads the Region4Web models.
 
