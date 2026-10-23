@@ -1,9 +1,0 @@
-# Backbone overlay for the actor + selection LLMs.
-# Loaded by `python -m benchmarks.runner --backbone deepseek-chat` and
-# deep-merged into config.yaml. Routed via the deepseek/ prefix (DeepSeek-V3.2).
-
-benchmark:
-  llm:
-    model: deepseek/deepseek-chat
-    params:
-      temperature: 0.0

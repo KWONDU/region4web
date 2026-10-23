@@ -54,7 +54,7 @@ python -m benchmarks.run_parallel --backbone gpt-5.1 --mode pagedigest \
 ```
 
 - `--task-slice 0:10` runs part of a task list.
-- `--backbone <name>` merges `configs/<name>.yaml` into `config.yaml`. Configs are provided for `gpt-5.1` and `deepseek-chat` (DeepSeek-V3.2). Model names with the `openai/`, `anthropic/`, `deepseek/`, or `gemini/` prefix call the provider API, and other names (e.g., `Qwen/Qwen3.5-27B`) call an OpenAI-compatible vLLM server at `benchmark.llm.base_url`.
+- `--backbone <name>` merges `configs/<name>.yaml` into `config.yaml`. Model names with the `openai/`, `anthropic/`, `deepseek/`, or `gemini/` prefix call the provider API, and other names (e.g., `Qwen/Qwen3.5-27B`) call an OpenAI-compatible vLLM server at `benchmark.llm.base_url`.
 - With `run_parallel` in `pagedigest` mode, the number of parallel runners is capped at the number of visible GPUs, since each runner loads the Region4Web models.
 
 Each task writes to `results/webarena/<backbone>/base/<mode>/<task_id>/`:
