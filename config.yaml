@@ -6,7 +6,7 @@ framework:
 
   # -- Hierarchical Decomposition --
   decomposition:
-    checkpoint_path: checkpoints/decomposition/run_001/epoch_125.pt
+    checkpoint_path: region4web/decomposition.pt
     threshold: 0.55
     model:
       num_roles: 204                  # 203 CDP roles + 1 unknown
@@ -17,7 +17,7 @@ framework:
   # -- Semantic Abstraction --
   abstraction:
     base_model: Qwen/Qwen3-0.6B
-    checkpoint_path: checkpoints/abstraction/run_001/step_65350
+    checkpoint_path: region4web/abstraction
     batch_size: 16
 
 # =============================================================================

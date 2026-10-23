@@ -1,4 +1,4 @@
-"""Parallel WebArena runner (supplementary release).
+"""Parallel WebArena runner.
 
 Splits the input task list by single-site domain, then spawns one
 ``benchmarks.runner`` subprocess per domain in parallel. All other arguments
