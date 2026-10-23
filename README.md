@@ -15,18 +15,19 @@ Web agents typically observe a page at the same element-level granularity as the
 | Component | Code | Trained model |
 |---|---|---|
 | Hierarchical decomposition | `framework/decomposition/` | `region4web/decomposition.pt` |
-| Semantic abstraction (Qwen3-0.6B) | `framework/abstraction/` | `region4web/abstraction/` (Git LFS) |
+| Semantic abstraction (Qwen3-0.6B) | `framework/abstraction/` | `region4web/abstraction/` (weights not included) |
 | PageDigest | `pipeline/` | – |
 
 ## Setup
 
 ```bash
-git lfs install && git lfs pull        # fetch region4web/abstraction/model.safetensors
 pip install -e .
 pip install -r requirements.txt
 playwright install chromium
 cp secrets.yaml.example secrets.yaml   # API keys for the backbone and annotator LLMs
 ```
+
+The abstraction model weights (`region4web/abstraction/model.safetensors`, 1.2 GB) are not included in this repository due to file size limits.
 
 Set your WebArena URLs in `config.yaml` under `benchmark.webarena.urls`. Map tasks use the live OpenStreetMap service by default.
 
